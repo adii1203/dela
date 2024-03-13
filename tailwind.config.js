@@ -11,13 +11,14 @@ module.exports = {
   theme: {
     fontFamily: {
       Lato: ["Lato", "sans-serif"],
+      Handlee: ["Handlee", "cursive"],
     },
     fontWeight: {
       light: 300,
       normal: 400,
       medium: 500,
       semibold: 600,
-      bold: 700,
+      bold: 900,
     },
     container: {
       center: true,
