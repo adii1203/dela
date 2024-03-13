@@ -4,8 +4,6 @@ import {
   ChevronsRight,
   List,
   MenuIcon,
-  Moon,
-  Sun,
   X,
 } from "lucide-react";
 import { Button } from "../ui/button";
@@ -13,19 +11,39 @@ import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
-import { useTheme } from "@/hooks/useTheme";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+import { UserButton, useUser } from "@clerk/clerk-react";
+import SwitchTheme from "../switch-theme";
+
+type NavItems = {
+  name: string;
+  icon: React.ReactNode;
+  path: string;
+};
 
 const Nav = () => {
   const [isCollapse, setIsCollapse] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const sideBarRef = useRef<ElementRef<"aside"> | null>(null);
-  const { setTheme } = useTheme();
+  const { user } = useUser();
+
+  const [active, setActive] = useState<string>("/today");
+  const navList: NavItems[] = [
+    {
+      name: "Upcoming",
+      icon: <ChevronsRight size={24} />,
+      path: "/upcoming",
+    },
+    {
+      name: "Today",
+      icon: <List size={24} />,
+      path: "/today",
+    },
+    {
+      name: "Calendar",
+      icon: <CalendarDays size={24} />,
+      path: "/calendar",
+    },
+  ];
 
   const handelCollapse = () => {
     if (isCollapse) {
@@ -84,48 +102,39 @@ const Nav = () => {
                 <ChevronsLeft className="text-accent-foreground" />
               )}
             </Button>
+            <div className="flex items-center w-fit mx-auto rounded gap-3 px-3 py-2 hover:bg-accent">
+              <p>{user?.fullName}</p>
+              <UserButton afterSignOutUrl="/" />
+            </div>
           </div>
           <div className="mt-6">
             <p className="font-semibold text-lg pl-3 text-foreground">Tasks</p>
             <ul className="mt-3 flex flex-col gap-1">
-              <li className="flex items-center gap-4 font-semibold text-sm py-1 px-3 hover:bg-accent rounded cursor-pointer text-foreground">
-                <ChevronsRight size={24} />
-                <p>Upcoming</p>
-              </li>
-              <Link to="/task">
-                <li className="flex items-center gap-4 font-semibold text-sm py-1 px-3 hover:bg-accent rounded cursor-pointer text-foreground">
-                  <List size={24} />
-                  <p>Today</p>
-                </li>
-              </Link>
-              <li className="flex items-center gap-4 font-semibold text-sm py-1 px-3 hover:bg-accent rounded cursor-pointer text-foreground">
-                <CalendarDays size={24} />
-                <p>Calendar</p>
-              </li>
+              {navList.map((item) => {
+                return (
+                  <li
+                    key={item.path}
+                    onClick={() => {
+                      setActive(item.path);
+                      if (isMobile) {
+                        handelCollapse();
+                      }
+                    }}>
+                    <Link
+                      className={cn(
+                        "flex w-full items-center gap-4 font-semibold text-sm py-1 px-3 hover:bg-muted transition-colors duration-300 cursor-pointer text-accent-foreground",
+                        active === item.path && "bg-accent"
+                      )}
+                      to={item.path}>
+                      {item.icon}
+                      {item.name}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
-          <div className="pl-3 mt-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="rounded-full">
-                  <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                  <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                  <span className="sr-only">Toggle theme</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setTheme("light")}>
-                  Light
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("dark")}>
-                  Dark
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("system")}>
-                  System
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <SwitchTheme className="pl-3 pt-2" />
         </div>
       </aside>
     </>
