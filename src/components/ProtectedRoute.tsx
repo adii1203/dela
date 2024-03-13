@@ -3,10 +3,10 @@ import Nav from "./nav";
 import { useConvexAuth } from "convex/react";
 
 const ProtectedRoute = () => {
-  const { isAuthenticated } = useConvexAuth();
+  const { isAuthenticated, isLoading } = useConvexAuth();
   return (
     <>
-      {isAuthenticated ? (
+      {isLoading ? null : isAuthenticated ? (
         <>
           <Nav />
           <div>
