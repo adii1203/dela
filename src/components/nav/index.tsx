@@ -86,8 +86,8 @@ const Nav = () => {
       <aside
         ref={sideBarRef}
         className={cn(
-          "w-64 h-screen transition-all duration-300 ease-out overflow-hidden border-r border-r-border fixed",
-          isMobile && "py-0 pl-0 w-full fixed inset-0  z-[9999]"
+          "w-64 h-screen transition-all duration-300 ease-out overflow-hidden border-r border-r-border z-[999] relative",
+          isMobile && "py-0 pl-0 w-full fixed inset-0  z-[99]"
         )}>
         <div className="bg-background h-full rounded-md shadow-xl py-2 font-Lato">
           <div className="items-center justify-between font-bold flex px-3">
@@ -133,8 +133,8 @@ const Nav = () => {
                 );
               })}
             </ul>
+            <SwitchTheme className="pl-3 pt-2" />
           </div>
-          <SwitchTheme className="pl-3 pt-2" />
         </div>
       </aside>
     </>
