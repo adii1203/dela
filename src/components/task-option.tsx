@@ -1,9 +1,11 @@
-import { Bold, Highlighter, Italic, Underline } from "lucide-react";
+import { Bold, Italic, Underline } from "lucide-react";
 import { Button } from "./ui/button";
 import { Id } from "convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { toast } from "sonner";
+
+import HighlightTask from "./highligth-task";
 
 type Task = {
   title: string;
@@ -27,6 +29,7 @@ const TaskOptions = ({
   const handelUnderline = useMutation(api.tasks.underline);
   const handelItalic = useMutation(api.tasks.italic);
   const deleteTask = useMutation(api.tasks.deleteTask);
+  const handelHighlight = useMutation(api.tasks.highlight);
 
   const handelDelete = (id: Id<"tasks">) => {
     const promise = deleteTask({ id });
@@ -94,18 +97,12 @@ const TaskOptions = ({
           </Button>
           <p className="capitalize text-muted-foreground">Italic</p>
         </div>
-        <div className="flex flex-col items-center justify-between">
-          <Button
-            onClick={() => {
-              handelItalic({ id: selected._id, italic: !selected.italic });
-              setSelected(null);
-            }}
-            variant={"outline"}
-            className={selected.highlight ? "border-primary" : ""}>
-            <Highlighter />
-          </Button>
-          <p className="capitalize text-muted-foreground">highlight</p>
-        </div>
+
+        <HighlightTask
+          handelHighlight={handelHighlight}
+          isHighlited={selected.highlight}
+          id={selected._id}
+        />
       </div>
     </div>
   );
