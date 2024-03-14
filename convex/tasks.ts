@@ -85,6 +85,24 @@ export const italic = mutation({
   },
 });
 
+export const highlight = mutation({
+  args: {
+    id: v.id("tasks"),
+    highlight: v.boolean(),
+    color: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (identity === null) {
+      throw new Error("Unauthorized");
+    }
+    await ctx.db.patch(args.id, {
+      highlight: args.highlight,
+      highlightColor: args.color,
+    });
+  },
+});
+
 export const deleteTask = mutation({
   args: {
     id: v.id("tasks"),
