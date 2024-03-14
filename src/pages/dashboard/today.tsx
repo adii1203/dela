@@ -151,11 +151,12 @@ const Task = ({
           ) : (
             <div className="px-2 rounded">{taskTypes[task.type]}</div>
           )}
-          <div className="w-full">
+          <div
+            className="w-full rounded"
+            style={{ backgroundColor: task.highlightColor }}>
             <p
-              style={{ backgroundColor: task.highlightColor }}
               className={cn(
-                " font-[400] px-1 rounded relative w-fit",
+                " font-[400] px-1 relative w-fit",
                 task.bold && "font-bold",
                 task.underline && "underline",
                 task.italic && "italic",
