@@ -8,8 +8,8 @@ const ProtectedRoute = () => {
     <>
       {isLoading ? null : isAuthenticated ? (
         <>
-          <Nav />
-          <div>
+          <div className="flex">
+            <Nav />
             <Outlet />
           </div>
         </>
