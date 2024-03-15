@@ -103,6 +103,20 @@ export const highlight = mutation({
   },
 });
 
+export const url = mutation({
+  args: {
+    id: v.id("tasks"),
+    url: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (identity === null) {
+      throw new Error("Unauthorized");
+    }
+    await ctx.db.patch(args.id, { url: args.url });
+  },
+});
+
 export const deleteTask = mutation({
   args: {
     id: v.id("tasks"),
@@ -130,5 +144,22 @@ export const getAllTask = query({
       .collect();
 
     return allTask;
+  },
+});
+
+export const getTaskById = query({
+  args: {
+    id: v.id("tasks"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (identity === null) {
+      throw new Error("Unauthorized");
+    }
+    const task = await ctx.db.get(args.id);
+    if (task?.userId !== identity.subject) {
+      throw new Error("Unauthorized");
+    }
+    return task;
   },
 });
