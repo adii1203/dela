@@ -73,6 +73,19 @@ const HighlightTask = ({
             ))}
           </div>
         </div>
+        {isHighlited && (
+          <div>
+            <p className="text-muted-foreground text-xs mb-2">Choose color</p>
+            <Button
+              onClick={() => {
+                handelHighlight({ id, highlight: false, color: "" });
+              }}
+              variant={"outline"}
+              className="w-full">
+              Remove
+            </Button>
+          </div>
+        )}
       </PopoverContent>
     </Popover>
   );
