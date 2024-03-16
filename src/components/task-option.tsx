@@ -1,4 +1,4 @@
-import { Bold, Italic, Link2, Underline } from "lucide-react";
+import { Bold, Italic, Underline } from "lucide-react";
 import { Button } from "./ui/button";
 import { Id } from "convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
@@ -7,7 +7,7 @@ import { toast } from "sonner";
 
 import HighlightTask from "./highligth-task";
 import AddLink from "./model/add-link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type Task = {
   title: string;
