@@ -6,7 +6,11 @@ import { api } from "./../../../convex/_generated/api";
 import { toast } from "sonner";
 import Tasktype from "../task-type";
 
-const Creat = () => {
+const Creat = ({
+  inputRef,
+}: {
+  inputRef: React.RefObject<HTMLInputElement>;
+}) => {
   const [data, setdata] = useState("");
   const [taskType, setTaskType] = useState("todo");
   const creatTask = useMutation(api.tasks.creatTask);
@@ -40,6 +44,7 @@ const Creat = () => {
         <Tasktype taskType={taskType} setTaskType={setTaskType} />
       </div>
       <Input
+        ref={inputRef}
         onKeyDown={handelKeyDown}
         value={data}
         onChange={(e) => setdata(e.target.value)}

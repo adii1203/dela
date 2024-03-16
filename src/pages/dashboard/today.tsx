@@ -8,9 +8,9 @@ import { Id } from "convex/_generated/dataModel";
 import { toast } from "sonner";
 import { FunctionReference } from "convex/server";
 import TaskOptions from "@/components/task-option";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-interface Task {
+type Task = {
   title: string;
   isCompleted: boolean;
   _id: Id<"tasks">;
@@ -20,13 +20,21 @@ interface Task {
   highlight?: boolean;
   highlightColor?: string;
   type: string;
-}
+  url?: string;
+};
 
 const Today = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const tasks = useQuery(api.tasks.getAllTask);
   const check = useMutation(api.tasks.markCompleted);
   const [selected, setSelected] = useState<Task | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (inputRef !== null) {
+      inputRef.current?.focus();
+    }
+  }, []);
 
   return (
     <main
@@ -41,7 +49,7 @@ const Today = () => {
             {tasks?.filter((task) => task.isCompleted === false).length}
           </span>
         </div>
-        <Creat />
+        <Creat inputRef={inputRef} />
         <section className="mt-6 mx-auto py-3 max-w-[40rem] px-3 rounded-md border-border border min-h-80 bg-card">
           <ul className="text-card-foreground font-Lato font-semibold">
             {tasks?.length === 0 ? (
@@ -68,25 +76,13 @@ const Today = () => {
   );
 };
 
-type TaskProps = {
-  title: string;
-  isCompleted: boolean;
-  _id: Id<"tasks">;
-  bold?: boolean;
-  underline?: boolean;
-  italic?: boolean;
-  highlight?: boolean;
-  highlightColor?: string;
-  type: string;
-};
-
 const Task = ({
   task,
   check,
   setSelected,
 }: {
-  task: TaskProps;
-  setSelected: React.Dispatch<React.SetStateAction<Task | null>>;
+  task: Task;
+  setSelected: (task: Task | null) => void;
   check: ReactMutation<
     FunctionReference<
       "mutation",
@@ -158,12 +154,18 @@ const Task = ({
               className={cn(
                 " font-[400] px-1 relative w-fit",
                 task.bold && "font-bold",
-                task.underline && "underline",
+                task.underline || task.url !== "" ? "underline" : "",
                 task.italic && "italic",
                 task.isCompleted &&
                   "text-card-foreground/50 after:content-[''] after:w-full after:h-[1px] after:left-0 after:bottom-[40%] after:bg-muted-foreground after:absolute"
               )}>
-              {task.title}
+              {task.url !== "" ? (
+                <a href={task.url} target="_blank" rel="noreferrer noopener">
+                  {task.title}
+                </a>
+              ) : (
+                `${task.title}`
+              )}
             </p>
           </div>
         </div>
